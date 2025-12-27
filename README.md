@@ -87,4 +87,28 @@ uv run log_analysis/plot_receiving_rate.py -i log.txt -u 4 -w 200
 
 ## Traffic Generation
 
-*Coming soon: Tools for generating simulation traffic datasets*
+### Traffic Generator
+
+```bash
+# Generate traffic for 10 hosts with GoogleRPC distribution
+uv run traffic_gen/traffic_gen.py -n 10 -c traffic_gen/dist_cdf/GoogleRPC2008.txt -l 0.3 -b 10G -t 1 -o traffic.txt
+```
+
+**Available CDF Distributions:** `AliStorage2019`, `FbHdp`, `GoogleRPC2008`, `WebSearch`
+
+### Priority Modification
+
+```bash
+# Shift priority 3 to 2
+uv run traffic_gen/shift_pg_3_to_2.py -i input.txt -o output.txt
+
+# Shift priority 2 to 3
+uv run traffic_gen/shift_pg_2_to_3.py -i input.txt -o output.txt
+```
+
+### Visualization
+
+```bash
+# Draw workload CDF
+uv run traffic_gen/draw_workload_cdf.py traffic_gen/dist_cdf/GoogleRPC2008.txt
+```
