@@ -51,6 +51,21 @@ uv run rate_allocation.py -i log.txt -n 4
 uv run rate_allocation.py -i log.txt -n 4 --dport 101 --timestamp-start 2.0 --timestamp-end 5.0
 ```
 
+### CNCP Update Rate
+
+Plots CNCP update rate for all 5-tuples on a single chart.
+
+```bash
+# Plot all 5-tuples
+uv run draw_source_update.py -i log.txt
+
+# Filter by node and ports
+uv run draw_source_update.py -i log.txt -u 4 -s 100 -d 101
+
+# With smoothing window and timestamp range
+uv run draw_source_update.py -i log.txt -w 10 --timestamp-start 0.5 --timestamp-end 10.0
+```
+
 ### Receiving Rate
 
 Plots receiving rate from RdmaHw Receiving log lines.
