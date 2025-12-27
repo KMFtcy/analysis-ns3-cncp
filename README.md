@@ -3,6 +3,7 @@
 This is a repo of log analysis script for <https://github.com/KMFtcy/ns3-cncp>.
 
 **Note**: Analysis scripts read log lines with specific prefixes:
+
 - `rate_allocation.py`: reads lines with `[CNCP Update]` prefix
 - `plot_receiving_rate.py`: reads lines with `[RdmaHw Receiving]` prefix
 
