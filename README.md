@@ -36,3 +36,25 @@ Identifies sidecar flows using CC-specific criteria (e.g., pg value) configured 
 ```bash
 uv run sidecar_flow_analysis.py -m 100000 -d ./simulation_results -t 2 -s 5
 ```
+
+## Rate Allocation & Receiving Rate
+
+**Stats**: Rate allocation and receiving rate over time
+
+### Rate Allocation
+
+Plots rate allocation per flow with optional smoothing.
+
+```bash
+uv run rate_allocation.py -i log.txt -n 4
+
+uv run rate_allocation.py -i log.txt -n 4 --dport 101 --timestamp-start 2.0 --timestamp-end 5.0
+```
+
+### Receiving Rate
+
+Plots receiving rate from RdmaHw Receiving log lines.
+
+```bash
+uv run plot_receiving_rate.py -i log.txt -u 4 -w 200
+```
