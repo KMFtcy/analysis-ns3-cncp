@@ -21,6 +21,18 @@ uv run draw_fct_analysis.py fct_analysis_result.txt cc_11_fct cc_11_noOQ_fct
 
 ## Throughput Analysis
 
+**Stats**: Total flow size and flow count per CC
+
 ```bash
 uv run throughput_analysis.py -m 100000 -d ./simulation_results
+```
+
+## Sidecar Flow Analysis
+
+**Stats**: FCT analysis for sidecar flows
+
+Identifies sidecar flows using CC-specific criteria (e.g., pg value) configured in `CC_pg_config` dictionary.
+
+```bash
+uv run sidecar_flow_analysis.py -m 100000 -d ./simulation_results -t 2 -s 5
 ```
