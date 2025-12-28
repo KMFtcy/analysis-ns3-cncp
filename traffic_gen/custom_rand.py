@@ -8,7 +8,11 @@ class CustomRand:
 		if cdf[-1][1] != 100:
 			return False
 		for i in range(1, len(cdf)):
-			if cdf[i][1] <= cdf[i-1][1] or cdf[i][0] <= cdf[i-1][0]:
+			# y must be strictly increasing
+			if cdf[i][1] <= cdf[i-1][1]:
+				return False
+			# x must be non-decreasing (allow equal for fixed-size distribution)
+			if cdf[i][0] < cdf[i-1][0]:
 				return False
 		return True
 	def setCdf(self, cdf):
