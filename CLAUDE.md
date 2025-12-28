@@ -15,6 +15,8 @@ This is a Python toolkit for analyzing ns3-cncp simulation logs and generating t
 - **Package Manager**: `uv` (see `pyproject.toml`)
 - **Dependencies**: matplotlib, pandas, seaborn, tqdm
 
+**Important**: This project uses uv for all Python environment and dependency management. All script execution and testing must use `uv run`:
+
 ## Running Code
 
 All scripts should be executed using `uv run`:
