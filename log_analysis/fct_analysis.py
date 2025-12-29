@@ -16,12 +16,14 @@ if __name__=="__main__":
 	parser.add_argument('-b', dest='bw', action='store', type=int, default=25, help="bandwidth of edge link (Gbps)")
 	parser.add_argument('-d', dest='directory', action='store', default='.', help="Directory containing the FCT files")
 	parser.add_argument('-m', dest='max_size', action='store', type=int, default=None, help="only consider flows with size <= max_size (bytes)")
+	parser.add_argument('--priority', dest='priority', action='store', type=int, default=None, help="only consider flows with this priority (pg) value")
 	args = parser.parse_args()
 
 	type = args.type
 	time_limit = args.time_limit
 	max_size = args.max_size
 	directory = args.directory
+	priority_filter = args.priority
 
 	# Please list all the cc (together with parameters) that you want to compare.
 	# For example, here we list two CC: 1. HPCC-PINT with utgt=95,AI=50Mbps,pint_log_base=1.05,pint_prob=1; 2. HPCC with utgt=95,ai=50Mbps.
@@ -59,12 +61,14 @@ if __name__=="__main__":
 				fields = line.strip().split()
 				if len(fields) < 13: # could be the result from BFC
 					dport = int(fields[5])
+					pg = None  # BFC format has no pg field
 					m_size = int(fields[7])
 					start_time = int(fields[8])
 					fct = int(fields[9])
 					standalone_f = int(fields[10])
 				else:
 					dport = int(fields[5])
+					pg = int(fields[6])
 					m_size = int(fields[7])
 					start_time = int(fields[9])
 					fct = int(fields[10])
@@ -72,6 +76,8 @@ if __name__=="__main__":
 				if type == 0 and dport != 100:
 					continue
 				if type == 1 and dport != 200:
+					continue
+				if priority_filter is not None and pg != priority_filter:
 					continue
 				if start_time + fct >= time_limit:
 					continue
