@@ -45,7 +45,7 @@ def read_log_file(file_path):
     
     return df
 
-def plot_rates(df, node_id=4, ip=None, sport=None, dport=None, timestamp_start=None, timestamp_end=None):
+def plot_rates(df, node_id=4, ip=None, sport=None, dport=None, timestamp_start=None, timestamp_end=None, log_file_path=None):
     # 筛选指定条件的数据
     filtered_data = df[df['node_id'] == node_id]
     print(f"After filtering by node_id={node_id}: {len(filtered_data)} records")
@@ -153,13 +153,22 @@ def plot_rates(df, node_id=4, ip=None, sport=None, dport=None, timestamp_start=N
         filename_parts.append(f'ts_{timestamp_start if timestamp_start is not None else "-"}_{timestamp_end if timestamp_end is not None else "-"}s')
     
     filename = '_'.join(filename_parts) + '_rates.png'
-    plt.savefig(filename, 
-                dpi=300, 
+
+    # 使用日志文件所在目录作为输出目录
+    if log_file_path:
+        import os
+        output_dir = os.path.dirname(log_file_path)
+        filepath = os.path.join(output_dir, filename)
+    else:
+        filepath = filename
+
+    plt.savefig(filepath,
+                dpi=300,
                 bbox_inches='tight',
                 pad_inches=0.1)
     plt.close()
-    print(f"Chart saved as: {filename}")
-    
+    print(f"Chart saved as: {filepath}")
+
     # 打印统计信息
     print(f"Valid updates: {len(valid_data)}")
     print(f"Skipped updates: {len(skipped_data)}")
@@ -178,10 +187,11 @@ def main():
 
     # 读取日志文件
     df = read_log_file(args.file)
-    
-    # 绘制图表
+
+    # 绘制图表，传入日志文件路径以便确定输出目录
     plot_rates(df, node_id=args.node, ip=args.ip, sport=args.sport, dport=args.dport,
-               timestamp_start=args.timestamp_start, timestamp_end=args.timestamp_end)
+               timestamp_start=args.timestamp_start, timestamp_end=args.timestamp_end,
+               log_file_path=args.file)
 
 if __name__ == "__main__":
     main() 
