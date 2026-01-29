@@ -96,6 +96,25 @@ uv run traffic_gen/traffic_gen.py -n 10 -c traffic_gen/dist_cdf/GoogleRPC2008.tx
 
 **Available CDF Distributions:** `AliStorage2019`, `FbHdp`, `GoogleRPC2008`, `WebSearch`
 
+### Per-Node Traffic Generator
+
+Generates traffic with independent Poisson processes per node. Each node's egress traffic is controlled by its own workload ratio relative to its link bandwidth.
+
+```bash
+# Generate traffic where each node sends at 20% of its 1G egress link bandwidth
+uv run traffic_gen/traffic_gen_per_node.py -n 10 -b 1G -l 0.2 -c traffic_gen/dist_cdf/GoogleRPC2008.txt -t 10 -o traffic_per_node.txt
+```
+
+**Output**: Each node sends approximately `bandwidth * load * time` bytes over the simulation duration. The actual amount varies due to Poisson randomness.
+
+**Parameters:**
+- `-n`: Number of hosts
+- `-b`: Host egress link bandwidth (G/M/K)
+- `-l`: Load ratio for each host (0.0-1.0)
+- `-c`: CDF file for flow size distribution
+- `-t`: Simulation time (seconds)
+- `-o`: Output file
+
 ### Priority Modification
 
 ```bash
