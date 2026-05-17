@@ -21,6 +21,7 @@ Options:
     -l  Background load per host link, fraction of bandwidth (default: 0.1)
     -b  Link bandwidth, supports G/M/K suffix (default: 10G)
     -s  Background flow size in Bytes (default: 20000)
+    -p  Background flow priority (default: 2)
 
 Note: each host independently generates background traffic at the given
 load, so total injected background bandwidth is nhost * bandwidth * load.
@@ -51,14 +52,14 @@ def poisson(lam):
     return -math.log(1 - random.random()) * lam
 
 
-def drain_bg_flows(heap, nhost, bg_size, avg_inter_arrival, t_bound, outf, counter):
+def drain_bg_flows(heap, nhost, bg_size, bg_priority, avg_inter_arrival, t_bound, outf, counter):
     """Drain all background flows with time <= t_bound from the heap."""
     while heap and heap[0][0] <= t_bound:
         t_bg, src = heapq.heappop(heap)
         dst = random.randint(0, nhost - 1)
         while dst == src:
             dst = random.randint(0, nhost - 1)
-        outf.write("%d %d %d %d %d %.9f\n" % (src, dst, 2, 100, bg_size, t_bg))
+        outf.write("%d %d %d %d %d %.9f\n" % (src, dst, bg_priority, 100, bg_size, t_bg))
         counter[0] += 1
         next_t = t_bg + poisson(avg_inter_arrival)
         heapq.heappush(heap, (next_t, src))
@@ -71,6 +72,7 @@ if __name__ == "__main__":
     parser.add_option("-l", "--load", dest="load", help="background traffic load", default="0.1")
     parser.add_option("-b", "--bandwidth", dest="bandwidth", help="link bandwidth (G/M/K)", default="10G")
     parser.add_option("-s", "--size", dest="size", help="background flow size in Bytes", default="20000")
+    parser.add_option("-p", "--priority", dest="priority", help="background flow priority", default="2")
     parser.add_option("-o", "--output", dest="output", help="output file")
     options, args = parser.parse_args()
 
@@ -82,6 +84,7 @@ if __name__ == "__main__":
     load = float(options.load)
     bandwidth = translate_bandwidth(options.bandwidth)
     bg_size = int(options.size)
+    bg_priority = int(options.priority)
 
     if bandwidth is None:
         print("bandwidth format incorrect")
@@ -111,7 +114,7 @@ if __name__ == "__main__":
         outf.write("%-15d\n" % 0)  # placeholder for total count
 
         # Process first existing flow
-        drain_bg_flows(heap, nhost, bg_size, avg_inter_arrival, min_time, outf, total)
+        drain_bg_flows(heap, nhost, bg_size, bg_priority, avg_inter_arrival, min_time, outf, total)
         outf.write(first_line + "\n")
         total[0] += 1
 
@@ -127,7 +130,7 @@ if __name__ == "__main__":
                 continue
             t_existing = float(parts[5])
 
-            drain_bg_flows(heap, nhost, bg_size, avg_inter_arrival, t_existing, outf, total)
+            drain_bg_flows(heap, nhost, bg_size, bg_priority, avg_inter_arrival, t_existing, outf, total)
             outf.write(line + "\n")
             total[0] += 1
 
@@ -137,5 +140,5 @@ if __name__ == "__main__":
 
     n_bg = total[0] - n_existing
     print("Original flows: %d" % n_existing)
-    print("Added background flows: %d (size=%dB, load=%.0f%%)" % (n_bg, int(options.size), load * 100))
+    print("Added background flows: %d (size=%dB, priority=%d, load=%.0f%%)" % (n_bg, int(options.size), bg_priority, load * 100))
     print("Total flows: %d" % total[0])
