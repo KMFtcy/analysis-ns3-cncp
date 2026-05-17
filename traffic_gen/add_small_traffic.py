@@ -20,7 +20,7 @@ Options:
     -o  Output file (required)
     -l  Background load per host link, fraction of bandwidth (default: 0.1)
     -b  Link bandwidth, supports G/M/K suffix (default: 10G)
-    -s  Background flow size in KB (default: 20)
+    -s  Background flow size in Bytes (default: 20000)
 
 Note: each host independently generates background traffic at the given
 load, so total injected background bandwidth is nhost * bandwidth * load.
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     parser.add_option("-n", "--nhost", dest="nhost", help="number of hosts")
     parser.add_option("-l", "--load", dest="load", help="background traffic load", default="0.1")
     parser.add_option("-b", "--bandwidth", dest="bandwidth", help="link bandwidth (G/M/K)", default="10G")
-    parser.add_option("-s", "--size", dest="size", help="background flow size in KB", default="20")
+    parser.add_option("-s", "--size", dest="size", help="background flow size in Bytes", default="20000")
     parser.add_option("-o", "--output", dest="output", help="output file")
     options, args = parser.parse_args()
 
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     nhost = int(options.nhost)
     load = float(options.load)
     bandwidth = translate_bandwidth(options.bandwidth)
-    bg_size = int(options.size) * 1024  # KB to bytes
+    bg_size = int(options.size)
 
     if bandwidth is None:
         print("bandwidth format incorrect")
@@ -135,4 +135,7 @@ if __name__ == "__main__":
         outf.seek(0)
         outf.write("%-15d" % total[0])
 
+    n_bg = total[0] - n_existing
+    print("Original flows: %d" % n_existing)
+    print("Added background flows: %d (size=%dB, load=%.0f%%)" % (n_bg, int(options.size), load * 100))
     print("Total flows: %d" % total[0])
