@@ -6,12 +6,6 @@ from optparse import OptionParser
 from custom_rand import CustomRand
 from tqdm import tqdm
 
-class Flow:
-	def __init__(self, src, dst, size, t):
-		self.src, self.dst, self.size, self.t = src, dst, size, t
-	def __str__(self):
-		return "%d %d 3 100 %d %.9f"%(self.src, self.dst, self.size, self.t)
-
 def translate_bandwidth(b):
 	if b == None:
 		return None
@@ -96,8 +90,6 @@ if __name__ == "__main__":
 				size = 1
 			n_flow += 1
 			pg = 2
-			if size > 1000000: # if size > 1MB, set pg to 3
-				pg = 3
 			ofile.write("%d %d %d 100 %d %.9f\n"%(src, dst, pg, size, t * 1e-9))
 			heapq.heapreplace(host_list, (t + inter_t, src))
 			pbar.update(1)
