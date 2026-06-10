@@ -1,3 +1,20 @@
+"""
+Traffic generation model (per-node egress offered load):
+
+- Each of the nhost nodes runs an independent Poisson arrival process.
+- A global min-heap schedules the next arrival time across all nodes
+  (one heap entry per source, not a single shared process).
+- Target offered load per node: bandwidth * load (bits/sec), i.e. each
+  source expects to send bandwidth * load / 8 * time bytes over the run.
+- Total network offered load is approximately nhost * bandwidth * load.
+- On each arrival: flow size is sampled from the CDF; destination is
+  chosen uniformly at random among other nodes (dst != src).
+- Output format:
+    <flow_count>
+    <src> <dst> <priority> <dst_port> <size_bytes> <start_time_seconds>
+  start_time uses base_t = 2e9 ns; priority is fixed to pg=2.
+"""
+
 import sys
 import random
 import math
