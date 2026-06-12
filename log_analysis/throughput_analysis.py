@@ -9,7 +9,7 @@ if __name__=="__main__":
 	parser.add_argument('-t', dest='type', action='store', type=int, default=2, help="0: normal, 1: incast, 2: all")
 	parser.add_argument('-T', dest='time_limit', action='store', type=int, default=4000000000, help="only consider flows that finish before T")
 	parser.add_argument('-d', dest='directory', action='store', default='.', help="Directory containing the FCT files")
-	parser.add_argument('-m', dest='min_size', action='store', type=int, required=True, default=0, help="only consider flows with size >= min_size (bytes)")
+	parser.add_argument('-m', dest='min_size', action='store', type=int, default=None, help="only consider flows with size >= min_size (bytes)")
 	parser.add_argument('-P', dest='priority', action='store', type=int, default=None, help="only consider flows with this priority")
 	args = parser.parse_args()
 
