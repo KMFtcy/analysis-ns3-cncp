@@ -80,7 +80,7 @@ if __name__=="__main__":
 					continue
 				if start_time + fct >= time_limit:
 					continue
-				if m_size < min_size:
+				if min_size is not None and m_size < min_size:
 					continue
 				if priority_filter is not None and priority != priority_filter:
 					continue
